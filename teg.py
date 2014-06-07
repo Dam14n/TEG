@@ -156,7 +156,7 @@ class TEG(object):
 		1) Si el jugador gano un pais del cual no habia usado una
 		tarjeta que posee, se colocan 2 ejercitos en ese pais.
 		2) Si el jugador realizo menos de 3 canjes y gano al menos un
-		pais o si realizo 3 o mas cajes y gano al menos dos paises,
+		pais o si realizo 3 o mas canjes y gano al menos dos paises,
 		recibe una nueva tarjeta de pais.
 		3) Si recibio tarjeta de pais y posee ese pais, recibe 2
 		ejercitos adicionales en el mismo.
@@ -183,12 +183,12 @@ class TEG(object):
 	def jugador_es_ganador(self, jugador):
 		"""Verifica si el jugador gano el juego.
 		Un jugador gana el juego si conquista el 100% de los paises."""
-		raise NotImplementedError
+		return self.tablero.cantidad_paises() == self.tablero.paises_color(jugador.su_color())
 
 	def jugador_esta_vivo(self, jugador):
 		"""Verifica si un jugador sigue en carrera.
 		Un jugador muere cuando se queda sin paises."""
-		raise NotImplementedError
+		return 0 != self.tablero.paises_color(jugador.su_color())
 
 	def jugar(self):
 		Interfaz.setear_titulo('Trabajo de Entrega Grupal')
