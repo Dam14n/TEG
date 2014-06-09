@@ -80,7 +80,6 @@ class TEG(object):
 										# cantidad de ejercitos
 										#en cualquier continente
 				ejercitos = jugador.agregar_ejercitos(self.tablero, {"": cantidad})
-
 				assert(sum(ejercitos.values()) == cantidad)
 				for pais in ejercitos:
 					assert(self.tablero.color_pais(pais) == jugador.color)
@@ -161,7 +160,22 @@ class TEG(object):
 		3) Si recibio tarjeta de pais y posee ese pais, recibe 2
 		ejercitos adicionales en el mismo.
 		"""
-		raise NotImplementedError()
+		if paises_ganados >= 1:
+			tarjeta = mazo.sacar_tarjeta()
+			jugador.asignar_tarjeta(tarjeta)
+			canjes = self.canjear_tarjetas()
+			if (canjes >= 3 and paises_ganados >= 2) or (canjes < 3 and paises_ganados >= 1):
+				self.manejar_tarjetas(jugador,paises_ganados)
+                    
+    def canjear_tarjetas(self):
+        """Comprueba si las tarjetas que posee el jugador coinciden con los paises que posee el jugador."""
+        canjes = 0
+        for tarjeta in jugador.tarjetas:
+            if tablero.color_pais(tarjeta.pais) == jugador.su_color():
+                tablero.asignar_ejercitos(tarjeta.pais,2)
+                canjes += 1
+        return canjes
+                    
 
 	def agregar_ejercitos(self, inicia_ronda):
 		"""Realiza la fase general de colocacion de ejercitos.
@@ -178,8 +192,42 @@ class TEG(object):
 		3) Si el jugador poseyera continentes completos agregara el
 		adicional que indica ejercitos_por_continente obligatoriamente
 		en dicho continente."""
-		raise NotImplementedError
-
+		ejercitos_para_agregar = 0
+		if (len(jugador.tarjetas) > 1):
+			ejercitos_para_agregar = comprobar_canje(tipo_tarjeta)
+	
+	
+	def comprobar_canje(self,tarjeta):
+		"""Comprueba si las tarjetas pasadas son del mismo tipo o si son todas diferentes y devuelve la cantidad de ejercitos a agregar, en caso contrario devuelve 0"""
+		tipos = {}
+		ejercitos = 0
+		for tipo in jugador.tarjetas:
+			if tipo in tipos:
+				cantidad = tipos[tipo]
+				cantidad += 1
+				tipos[tipo] = cantidad
+			else:
+				tipos[tipo] = 1
+		if len(tipos) = 3:
+			ejercitos = calcular_ejercitos() 
+			jugador.canjes += 1
+		else:
+			for tipo in tipos:
+				if tipo.value() == 3:
+					ejercitos = calcular_ejercitos() 
+					jugador.canjes += 1
+		return ejercitos
+		
+	def calcular_ejercitos(self):
+		"""Calcula la cantidad de ejercitos segun el canje que realize"""
+		if jugador.canjes == 0:
+			ejercitos = 4
+		elif jugador.canjes == 1
+			ejercitos = 7
+		else:
+			ejercitos = jugador.canjes * 5
+		return ejercitos
+	
 	def jugador_es_ganador(self, jugador):
 		"""Verifica si el jugador gano el juego.
 		Un jugador gana el juego si conquista el 100% de los paises."""
