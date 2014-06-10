@@ -142,8 +142,9 @@ class Jugador(object):
 		"""Se le asigna una tarjeta al jugador"""
 		self.tarjetas.append(tarjeta)
 	
-	def devolver_tarjeta(self,tarjeta):
+	def devolver_tarjeta(self,mazo,tipo_tarjeta):
 		"""Devuelve la tarjeta canjeada al mazo"""
-		if tarjeta in self.tarjetas:
-			return self.tarjetas.pop(tarjeta)
+		for tarjeta in self.tarjetas:
+                    if tipo_tarjeta == tarjeta.tipo():
+                        mazo.devolver_tarjeta(self.tarjetas.pop(tarjeta))
 	

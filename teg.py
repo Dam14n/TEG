@@ -231,13 +231,17 @@ class TEG(object):
 			else:
 				tipos_t[tarjeta.tipo()] = 1
 		if len(tipos_t.keys()) == 3:
-			ejercitos = calcular_ejercitos() 
+			ejercitos = calcular_ejercitos()
 			jugador.agregar_canje()
+                        for tipo in tipos_t:
+                            jugador.devolver_tarjeta(mazo,tipo)
 		else:
 			for tipo in tipos_t:
                             if tipos_t.get(tipo) == 3:
                                     ejercitos = calcular_ejercitos() 
                                     jugador.agregar_canje()
+                                    for x in xrange(1,4):
+                                        jugador.devolver_tarjeta(mazo,tipo)
 		return ejercitos
 		
 	def calcular_ejercitos(self):
