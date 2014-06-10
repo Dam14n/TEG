@@ -147,4 +147,5 @@ class Jugador(object):
 		for tarjeta in self.tarjetas:
                     if tipo_tarjeta == tarjeta.tipo():
                         mazo.devolver_tarjeta(self.tarjetas.pop(tarjeta))
+						return
 	
