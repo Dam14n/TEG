@@ -160,20 +160,24 @@ class TEG(object):
 		3) Si recibio tarjeta de pais y posee ese pais, recibe 2
 		ejercitos adicionales en el mismo.
 		"""
-		if paises_ganados >= 1:
-			tarjeta = mazo.sacar_tarjeta()
-			jugador.asignar_tarjeta(tarjeta)
-			canjes = self.canjear_tarjetas()
+		if paises_ganados > 0:
+			jugador.asignar_tarjeta(mazo.sacar_tarjeta())
+			if jugador.canjes_realizados() = self.canjear_tarjetas(jugador)
 			if (canjes >= 3 and paises_ganados >= 2) or (canjes < 3 and paises_ganados >= 1):
 				self.manejar_tarjetas(jugador,paises_ganados)
                     
-    def canjear_tarjetas(self):
-        """Comprueba si las tarjetas que posee el jugador coinciden con los paises que posee el jugador."""
+    def canjear_tarjetas(self, jugador):
+        """Comprueba si las tarjetas que posee el jugador coinciden con sus paises."""
+        #primer tipo de canje (por pais)
         canjes = 0
-        for tarjeta in jugador.tarjetas:
-            if tablero.color_pais(tarjeta.pais) == jugador.su_color():
-                tablero.asignar_ejercitos(tarjeta.pais,2)
+        for tarjeta in jugador.sus_tarjetas():
+            if self.tablero.color_pais(tarjeta.su_pais()) == jugador.su_color():
+                self.tablero.asignar_ejercitos(tarjeta.pais, 2)
+                jugador.canjear_tarjeta(tarjeta)
+                
                 canjes += 1
+        #segundo tipo de canje (por tipo de tarjeta)
+        
         return canjes
                     
 
