@@ -8,6 +8,8 @@ class Jugador(object):
 		"""Crea un jugador desde un color y un nombre."""
 		self.color = color
 		self.nombre = nombre
+		self.tarjetas = []
+		self.canjes = 0
 
 	def atacar(self, tablero):
 		"""Le pide al usuario que ingrese un par de paises para
@@ -123,3 +125,25 @@ class Jugador(object):
 	def __str__(self):
 		"""Representacion de un jugador."""
 		return '%s (%s)' % (self.nombre, NOMBRE_COLORES[self.color])
+	
+	def sus_tarjetas(self):
+		"""Devuelve las tarjetas del jugador"""
+		return self.tarjetas
+	
+	def sus_canjes(self):
+		"""Devuelve la cantidad de canjes del jugador"""
+		return self.canjes
+		
+	def agregar_canje(self):
+		"""Agrega un canje al jugador"""
+		self.canjes += 1
+		
+	def asignar_tarjeta(self,tarjeta):
+		"""Se le asigna una tarjeta al jugador"""
+		self.tarjetas.append(tarjeta)
+	
+	def devolver_tarjeta(self,tarjeta):
+		"""Devuelve la tarjeta canjeada al mazo"""
+		if tarjeta in self.tarjetas:
+			return self.tarjetas.pop(tarjeta)
+	

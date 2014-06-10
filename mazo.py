@@ -14,6 +14,10 @@ class Tarjeta(object):
 	def __str__(self):
 		"""Representacion grafica."""
 		return "(%s, %s)" % (self.pais, NOMBRE_TARJETAS[self.tipo])
+        
+        def tipo(self):
+            """Devuelve el tipo de tarjeta"""
+            return self.tipo
 
 class Mazo(object):
 	"""Implementacion del mazo de tarjetas de pais."""
