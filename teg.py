@@ -1,4 +1,3 @@
-
 import random
 import time
 import math
@@ -160,7 +159,7 @@ class TEG(object):
 		ejercitos adicionales en el mismo.
 		"""
 		if paises_ganados > 0:
-			tarjeta = mazo.sacar_tarjeta()
+			tarjeta = self.mazo.sacar_tarjeta()
 			jugador.asignar_tarjeta(tarjeta)
 			self.canjear_tarjetas_por_pais()
 			if (jugador.canjes >= 3 and paises_ganados >= 2) or (jugador.canjes < 3 and paises_ganados >= 1):
@@ -168,9 +167,9 @@ class TEG(object):
                     
 	def canjear_tarjetas_por_pais(self):
 		"""Comprueba si las tarjetas que posee el jugador coinciden con los paises que posee el jugador, en dicho caso le agrega 2 ejercitos al pais."""
-		for tarjeta in jugador.tarjetas:
-			if tablero.color_pais(tarjeta.pais) == jugador.su_color():
-				tablero.asignar_ejercitos(tarjeta.pais,2)
+		for tarjeta in self.jugador.sus_tarjetas():
+			if self.tablero.color_pais(tarjeta.pais) == self.jugador.su_color():
+				self.tablero.asignar_ejercitos(tarjeta.pais,2)
 
 
 	def agregar_ejercitos(self, inicia_ronda):
@@ -188,7 +187,8 @@ class TEG(object):
 		3) Si el jugador poseyera continentes completos agregara el
 		adicional que indica ejercitos_por_continente obligatoriamente
 		en dicho continente."""
-		cantidad_paises = len(tablero.paises_color(jugador.su_color()))
+                jugador = self.jugadores[inicia_ronda % len(self.jugadores)]
+		cantidad_paises = len(self.tablero.paises_color(jugador.su_color()))
 		ejercitos_para_agregar = 0
 		if (len(jugador.sus_tarjetas()) > 1):
 			ejercitos_para_agregar += comprobar_canje(tipo_tarjeta)
@@ -196,25 +196,28 @@ class TEG(object):
 			ejercitos_para_agregar += 3
 		else:
 			ejercitos_para_agregar += cantidad_paises/2
-		ejercitos = comprobar_continentes()
+		ejercitos = self.comprobar_continentes(jugador)
 		ejercitos[""] = ejercitos_para_agregar
-		jugador.agregar_ejercitos(tablero,ejercitos)
+		ejercitos_jugador = jugador.agregar_ejercitos(self.tablero,ejercitos)
+		for pais in ejercitos_jugador:
+			self.tablero.asignar_ejercitos(pais, ejercitos_jugador[pais])
+		self.tablero.actualizar_interfaz()
         
-	def comprobar_continentes(self):
+	def comprobar_continentes(self,jugador):
 		"""Comprueba si el jugador posee un continente completo y devuelve un diccionario con la cantidad de ejercitos a agregar por contienente si es que posee alguno completo."""
 		fichas_continentes = {}
 		continente_completo = []
 		for continente in paises.paises_por_continente :
 			for pais in paises.paises_por_continente[continente]:
-				if jugador.su_color() == tablero.color_pais(pais):
+				if jugador.su_color() == self.tablero.color_pais(pais):
 					continente_completo.append(True)
 				else:
 					continente_completo.append(False)
-				if False in continente_completo:
-					continente_completo = []
-				else:
-					fichas_continentes[continente] = paises.ejercitos_por_continente[continente]
-					continente_completo = []
+			if False in continente_completo:
+				continente_completo = []
+			else:
+				fichas_continentes[continente] = paises.ejercitos_por_continente[continente]
+				continente_completo = []
 		return fichas_continentes
                 
 	def comprobar_canje(self,tarjeta):
@@ -227,15 +230,15 @@ class TEG(object):
 		if len(tipos_t.keys()) == 3:
 			ejercitos = calcular_ejercitos()
 			jugador.agregar_canje()
-                        for tipo in tipos_t:
-                            jugador.devolver_tarjeta(mazo,tipo)
+			for tipo in tipos_t:
+				jugador.devolver_tarjeta(mazo,tipo)
 		else:
 			for tipo in tipos_t:
-                            if tipos_t.get(tipo) == 3:
-                                    ejercitos = calcular_ejercitos() 
-                                    jugador.agregar_canje()
-                                    for x in xrange(1,4):
-                                        jugador.devolver_tarjeta(mazo,tipo)
+				if tipos_t.get(tipo) == 3:
+					ejercitos = calcular_ejercitos() 
+					jugador.agregar_canje()
+					for x in xrange(1,4):
+						jugador.devolver_tarjeta(mazo,tipo)
 		return ejercitos
 		
 	def calcular_ejercitos(self):
@@ -314,7 +317,7 @@ class TEG(object):
 
 			# La siguiente ronda es iniciada por el siguiente jugador:
 			inicia_ronda = (inicia_ronda + 1) % len(self.jugadores)
-
+                        
 			Interfaz.setear_texto("Ronda: %s" % self.texto_ronda(inicia_ronda))
 
 			# Los jugadores refuerzan sus ejercitos:
@@ -328,3 +331,4 @@ class TEG(object):
 if __name__ == '__main__':
 	t = TEG()
 	t.jugar()
+
