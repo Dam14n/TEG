@@ -42,25 +42,19 @@ class Jugador(object):
 		cuales 3 tienen que estar obligatoriamente en Africa.
 		Un ejemplo de retorno de la funcion podria ser
 		{"Zaire": 4, "Italia": 1}."""
-		entrar = True
+		ejercitos_a_poner = sum(cantidad.values())
 		asignaciones = {}
-		while entrar:
-			elegido = self.pedir_pais_propio("%s en etapa de asignacion. Seleccionar pais." % self)
-			while elegido and not (cantidad[""] or cantidad[tablero.continente_pais(elegido)]):
-				elegido = self.pedir_pais_propio("%s en etapa de asignacion. Seleccionar pais." % self)
-			
-			if elegido:
-				if cantidad.has_key(tablero.continente_pais(elegido)):
-					cantidad[tablero.continente_pais(elegido)] -= 1
+		while ejercitos_a_poner:
+			pais_elegido = self.pedir_pais_propio(tablero, "%s en etapa de asignacion. Seleccionar pais." % self)
+			while pais_elegido and not (cantidad[""] or cantidad.get(tablero.continente_pais(pais_elegido), 0)):
+				pais_elegido = self.pedir_pais_propio(tablero, "%s en etapa de asignacion. Seleccionar pais." % self)
+			if pais_elegido:
+				if cantidad.has_key(tablero.continente_pais(pais_elegido)): cantidad[tablero.continente_pais(pais_elegido)] -= 1
 				else: cantidad[""] -= 1
-			
-				
-				
-				
-			
-			else: entrar = not entrar
+				asignaciones[pais_elegido] = asignaciones.get(pais_elegido, 0) + 1
+				ejercitos_a_poner -= 1
 		return asignaciones
-
+		
 	def reagrupar(self, tablero):
 		"""Recibe el tablero y le pide al jugador que seleccione todos
 		los ejercitos que desea reagrupar. Devuelve una lista de
@@ -78,34 +72,29 @@ class Jugador(object):
 		reagrupamiento, Brasil quedara con 1 ejercito mas, Uruguay con
 		2 mas, Argentina con 2 menos (salen 3, entra 1) y Chile con 1
 		menos."""
-		entrar = True
 		reagrupamientos = []
-		while entrar:
-			origen = self.pedir_pais_propio()
-			while origen and tablero.ejercitos_pais(origen) > 1:
-				origen = self.pedir_pais_propio("%s en etapa de reagrupamiento. Seleccionar pais de origen." % self)
-			if origen:
-				cantidad_a_mover = self.listar_opciones(tablero, origen, "Reagrupamiento")
-				destino = pedir_pais_propio('%s esta reagrupando. Seleccionar pais de destino.' % self)
-				while destino and not tablero.es_limitrofe(origen, destino):
-					destino = pedir_pais_propio('%s esta reagrupando. Seleccionar pais de destino.' % self)
-				if not destino: continue
-				reagrupamientos += (origen, destino, cantidad_a_mover)
-				tablero.actualizar_interfaz({origen: - cantidad_a_mover, destino: cantidad_a_mover})
-				tablero.asignar_ejercitos(origen, - cantidad_a_mover)
-				tablero.asignar_ejercitos(destino, cantidad_a_mover)
-			else: entrar = not entrar
+		pais_origen = self.pedir_pais_propio(tablero, "%s en etapa de reagrupamiento. Seleccionar pais de origen." % self)
+		while pais_origen:
+			while pais_origen and tablero.ejercitos_pais(pais_origen) > 1:
+				pais_origen = self.pedir_pais_propio(tablero, "%s en etapa de reagrupamiento. Seleccionar pais de origen." % self)
+			if pais_origen:
+				# creo la lista desde 1 hasta la cantidad de ejercitos del pais menos 1, ya que si o si uno se tiene que quedar.
+				cantidad_a_mover = Interfaz.elegir("Reagrupamiento", "Ejercitos del pais %s." % pais_origen, [cantidad for cantidad in xrange(1, tablero.ejercitos_pais(pais_origen) - 1)])
+				pais_destino = pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
+				while pais_destino and not tablero.es_limitrofe(pais_origen, pais_destino):
+					pais_destino = pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
+				if not pais_destino: continue
+				reagrupamientos.append((pais_origen, pais_destino, cantidad_a_mover))
+				tablero.actualizar_interfaz({pais_origen: - cantidad_a_mover, pais_destino: cantidad_a_mover})
+				tablero.asignar_ejercitos(pais_origen, - cantidad_a_mover)
+				tablero.asignar_ejercitos(pais_destino, cantidad_a_mover)
 		return reagrupamientos
-		
-	def listar_opciones(self, tablero, pais, mensaje):
-		""""""
-		numero_ejercitos = tablero.ejercitos_pais(pais)
-		# Creo la lista desde 1 hasta uno menos de la cantidad de ejercitos en el pais(debe haber al menos un ejercito).
-		opciones_ejercitos = [cantidad for cantidad in xrange(numero_ejercitos - 1) if cantidad]
-		return Interfaz.elegir(mensaje, "Ejercitos del pais %s." % pais, opciones_ejercitos)
-		
+
 	def pedir_pais_propio(self, mensaje):
-		""""""
+		"""Recibe una cadena de texto y lo escribe en el titulo.
+		Pide al jugador que seleccione un pais que sea suyo.
+		Si clickea un pais suyo con click izquierdo, devuelve el pais.
+		Si hace click derecho, devuelve None."""
 		Interfaz.setear_titulo(mensaje)
 		origen, boton = Interfaz.seleccionar_pais()
 		while boton == Interfaz.BOTON_IZQUIERDO and tablero.color_pais(origen) != self.color:
@@ -130,7 +119,7 @@ class Jugador(object):
 		"""Devuelve las tarjetas del jugador"""
 		return self.tarjetas
 	
-	def sus_canjes(self):
+	def canjes_realizados(self):
 		"""Devuelve la cantidad de canjes del jugador"""
 		return self.canjes
 		
@@ -142,7 +131,7 @@ class Jugador(object):
 		"""Se le asigna una tarjeta al jugador"""
 		self.tarjetas.append(tarjeta)
 	
-	def devolver_tarjeta(self,mazo,tipo_tarjeta):
+	def devolver_tarjeta(self, mazo, tipo_tarjeta):
 		"""Devuelve la tarjeta canjeada al mazo"""
 		for tarjeta in self.tarjetas:
                     if tipo_tarjeta == tarjeta.tipo():
