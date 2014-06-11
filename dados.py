@@ -17,9 +17,6 @@ class Dados(object):
 	def __str__(self):
 		"""Representacion de la configuracion de dados de la ultima
 		tirada."""
-		#Aca pase de tener lista a cadena, Ejemplo:
-		# de [2,3,4] pasa a "2 - 3 - 4"
-		# me parece mejor.. un cambio simple.
 		atacante = " - ".join([str(x) for x in self.dados_atacante])
 		atacado = " - ".join([str(x) for x in self.dados_atacado])
 		return "Dados del atacado: %s \nDados del atacante: %s" % (atacado, atacante)
