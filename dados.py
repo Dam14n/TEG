@@ -62,9 +62,9 @@ class Dados(object):
 		"""Agrega los valores de los dados segun la cantidad
 		de dados pasada por parametro, y se los agrega al
 		ejercito y los ordena de mayor a menor."""
-		for cantidad_dados, dados in ((self.cantidad_atacante, self.cantidad_atacado), (self.dados_atacante,self.dados_atacado)):
+		for cantidad_dados, dados in ((self.cantidad_atacante, self.dados_atacante ), (self.cantidad_atacado,self.dados_atacado)):
 			for i in xrange(cantidad_dados):
-				dados.append(random.randrange(1,7))
+                            dados.append(random.randrange(1,7))
 			dados.sort(None, None, True)
 
 	def ejercitos_perdidos_atacante(self):
