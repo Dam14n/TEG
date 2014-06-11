@@ -7,15 +7,22 @@ class Dados(object):
 
 	def __init__(self):
 		"""Inicializacion del objeto."""
-		self.valor_dados_atacantes = []
-		self.valor_dados_defensores = []
+		self.dados_atacante = []
+		self.dados_atacado = []
+		self.cantidad_atacante = 0
+		self.cantidad_atacado = 0
 		self.ejercitos_atacantes_perdidos = 0
-		self.ejercitos_defensores_perdidos = 0
+		self.ejercitos_atacados_perdidos = 0
 
 	def __str__(self):
 		"""Representacion de la configuracion de dados de la ultima
 		tirada."""
-		return str("Dados defensores: %s \nDados atacantes: %s") % (str(self.valor_dados_defensores),str(self.valor_dados_atacantes))
+		#Aca pase de tener lista a cadena, Ejemplo:
+		# de [2,3,4] pasa a "2 - 3 - 4"
+		# me parece mejor.. un cambio simple.
+		atacante = " - ".join([str(x) for x in self.dados_atacante])
+		atacado = " - ".join([str(x) for x in self.dados_atacado])
+		return "Dados del atacado: %s \nDados del atacante: %s" % (atacado, atacante)
 
 	def lanzar_dados(self, ejercitos_atacante, ejercitos_atacado):
 		"""Recibe la cantidad de ejercitos presentes en el pais
@@ -35,31 +42,23 @@ class Dados(object):
 		atacado, el atacado pierde un ejercito. Si no, el atacante lo
 		pierde.
 		(Leer el reglamento del juego.)"""
-		ejercitos_atacantes = ejercitos_atacante
-		ejercitos_defensores = ejercitos_atacado
-		if (ejercitos_atacantes-1 >=3):
-                    self.agregar_dados(3, self.valor_dados_atacantes)
-                    if (ejercitos_defensores >= 3):
-			self.agregar_dados(3, self.valor_dados_defensores)
-                    elif (ejercitos_defensores <= 3):
-			self.agregar_dados(ejercitos_defensores, self.valor_dados_defensores)
-		elif (ejercitos_atacantes-1 <= 3):
-                    self.agregar_dados(ejercitos_atacantes-1, self.valor_dados_atacantes)
-                    if (ejercitos_defensores <= 3):
-			self.agregar_dados(ejercitos_defensores, self.valor_dados_defensores)
-                    elif (ejercitos_defensores >= 3): 
-			self.agregar_dados(3, self.valor_dados_defensores)
-		else:
-			print "No se posee la cantidad de ejercitos necesarios."
-			return
-		self.comparar_dados(self.valor_dados_atacantes,self.valor_dados_defensores)             
-	 
-	def agregar_dados(self, cantidad_dados,ejercito):
-		"""Agrega los valores de los dados segun la cantidad de dados pasada por parametro, y se los agrega al ejercito y los ordena de mayor a menor"""
-		for valor in xrange(1,cantidad_dados+1):
-			ejercito.append(self.dame_numero_dado())
-		ejercito.sort(None,None,True)
-            
+		if ejercitos_atacante > 3: self.cantidad_atacante = 3
+		else: self.cantidad_atacante = ejercitos_atacante - 1
+		if not self.cantidad_atacante: return # Significa que ejercitos_atacante es 1
+		if ejercitos_atacado > 2: self.cantidad_atacado = 3
+		else: self.cantidad_atacado = ejercitos_atacado
+		self.agregar_dados()
+		self.comparar_dados()
+
+	def agregar_dados(self):
+		"""Agrega los valores de los dados segun la cantidad
+		de dados pasada por parametro, y se los agrega al
+		ejercito y los ordena de mayor a menor."""
+		for cantidad_dados, dados in ((self.cantidad_atacante, self.cantidad_atacado), (self.dados_atacante,self.dados_atacado)):
+			for i in xrange(cantidad_dados):
+				dados.append(random.randrange(1,7))
+			dados.sort(None, None, True)
+
 	def ejercitos_perdidos_atacante(self):
 		"""Devuelve la cantidad de ejercitos que perdio el atacante en
 		la ultima tirada de dados."""
@@ -68,30 +67,17 @@ class Dados(object):
 	def ejercitos_perdidos_atacado(self):
 		"""Devuelve la cantidad de ejercitos que perdio el atacado en
 		la ultima tirada de dados."""
-		return self.ejercitos_defensores_perdidos
-            
-	def dame_numero_dado(self):
-		"""Elige un numero aleatorio entre 1 y 6, para darle un valor al dado"""
-		return random.randrange(1,7)
-        
-	def comparar_dados(self, ejercitos_atacantes, ejercitos_defensores):
-		"""Genera la batalla de los ejercitos en donde se pasan como parametro dos listas con los valores de cada ejercito defensore y atacante respectivamentes y 
-		se calcula quien perdio y gano cada batalla"""
+		return self.ejercitos_atacados_perdidos
+
+	def comparar_dados(self):
+		"""Compara la tirada de dados de ambos jugadores."""
 		posicion = 0
 		try:
-			for atacante in ejercitos_atacantes:
-				if atacante > ejercitos_defensores[posicion]:
-					self.ejercitos_defensores_perdidos += 1
+			for atacante in self.dados_atacante:
+				if atacante > self.dados_atacado[posicion]:
+					self.ejercitos_atacados_perdidos += 1
 				else:
 					self.ejercitos_atacantes_perdidos += 1
 				posicion += 1
 		except IndexError:
-			return IndexError
-        
-	def dados_tirados_de_mas(self):
-		"""Recibe las tiradas de los dados y se comprueba que la cantidad de dados de los defensores y atacantes sea menor que 3 en caso contrario se remueven los dados de menor valor"""
-		while len(self.valor_dados_atacantes) > 3 or len(self.valor_dados_defensores) > 3:
-			if len(self.valor_dados_atacantes) > len(self.valor_dados_defensores):
-				self.valor_dados_atacantes.pop()
-			elif len(self.valor_dados_atacantes) < len(self.valor_dados_defensores): 
-				self.valor_dados_defensores.pop()
+			pass
