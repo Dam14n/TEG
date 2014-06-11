@@ -39,7 +39,7 @@ class _Pais(object):
 	
 	def asignar_ejercitos(self, ejercitos):
 		""""""
-		self.ejercitos = ejercitos
+		self.ejercitos += ejercitos
 
 class Tablero(object):
 	"""Clase que representa el tablero de juego."""
@@ -71,9 +71,13 @@ class Tablero(object):
 		{'Argentina': -1, 'Brasil': 1}, el tablero se dibujaria con un
 		ejercito menos en Argentina y uno mas en Brasil."""
 		paises = {}
-		for pais in agregados:
-			paises[pais] = (self.paises[pais].su_color(), agregados[pais])
-		return Interfaz.ubicar_ejercitos(paises)
+		if agregados:
+			for pais in agregados:
+				paises[pais] = (self.paises[pais].su_color(), agregados[pais])
+		else:
+			for pais in self.paises:
+				paises[pais] = (self.paises[pais].su_color(), self.paises[pais].sus_ejercitos())
+		Interfaz.ubicar_ejercitos(paises)
 		# Utilizar la funcion de la Interfaz, que recibe un diccionario
 		# de paises y colores, por ejemplo:
 		# >>> paises = {'Argentina': (COLOR_NEGRO, 10), 'Brasil':
@@ -96,12 +100,10 @@ class Tablero(object):
 
 	def cantidad_paises(self):
 		"""Informa la cantidad de paises totales."""
-		# preguntar que sentido tiene este metodo.
 		return len(self.paises.values())
 
 	def cantidad_paises_continente(self, continente):
 		"""Informa la cantidad de paises en continente."""
-		#Este igual.
 		return len(self.continentes[continente])
 
 	def continente_pais(self, pais):
