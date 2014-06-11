@@ -171,6 +171,45 @@ class TEG(object):
 			if self.tablero.color_pais(tarjeta.pais) == self.jugador.su_color():
 				self.tablero.asignar_ejercitos(tarjeta.pais,2)
 
+	def manejar_tarjetas(self, jugador, paises_ganados):
+		"""
+		Realiza la fase de obtencion de tarjetas de pais.
+		1) Si el jugador gano un pais del cual no habia usado una
+		tarjeta que posee, se colocan 2 ejercitos en ese pais.
+		2) Si el jugador realizo menos de 3 canjes y gano al menos un
+		pais o si realizo 3 o mas canjes y gano al menos dos paises,
+		recibe una nueva tarjeta de pais.
+		3) Si recibio tarjeta de pais y posee ese pais, recibe 2
+		ejercitos adicionales en el mismo.
+		"""
+		if paises_ganados and (jugador.canjes_realizados() < 3 or paises_ganados > 1):
+			self.dar_tarjeta(jugador)
+
+	def dar_tarjeta(self, jugador):
+		""""""
+		tarjeta = self.mazo.sacar_tarjeta()
+		if self.tablero.color_pais(tarjeta.su_pais()) == jugador.su_color():
+			self.tablero.actualizar_interfaz({tarjeta.su_pais(): 2})
+			self.tablero.asignar_ejercitos(tarjeta.su_pais(), 2)
+			self.tarjeta_usada(tarjeta, jugador)
+		jugador.asignar_tarjeta(tarjeta)
+		
+	def tarjeta_usada(self, tarjeta, jugador):
+		""""""
+		self.tarjetas_usadas[jugador] = self.tarjetas_usadas.get(jugador, []) + [tarjeta.su_pais()]
+
+	def usar_tarjeta_por_pais(self, jugador):
+		"""Comprueba si las tarjetas que posee el jugador
+		coinciden con los paises que posee el jugador,
+		en dicho caso le agrega 2 ejercitos al pais."""
+		for tarjeta in jugador.sus_tarjetas():
+			if tablero.color_pais(tarjeta.su_pais()) == jugador.su_color():
+				tablero.asignar_ejercitos(tarjeta.su_pais(), 2)
+				tablero.actualizar_interfaz({tarjeta.su_pais(): 2})
+				jugador.canje_por_pais(tarjeta)
+
+
+
 
 	def agregar_ejercitos(self, inicia_ronda):
 		"""Realiza la fase general de colocacion de ejercitos.
