@@ -42,6 +42,7 @@ class Dados(object):
 		atacado, el atacado pierde un ejercito. Si no, el atacante lo
 		pierde.
 		(Leer el reglamento del juego.)"""
+		self.reiniciar()
 		if ejercitos_atacante > 3: self.cantidad_atacante = 3
 		else: self.cantidad_atacante = ejercitos_atacante - 1
 		if not self.cantidad_atacante: return # Significa que ejercitos_atacante es 1
@@ -49,6 +50,13 @@ class Dados(object):
 		else: self.cantidad_atacado = ejercitos_atacado
 		self.agregar_dados()
 		self.comparar_dados()
+
+	def reiniciar(self):
+		"""Reinicializa el dado con los contadores en cero."""
+		self.dados_atacante = []
+		self.dados_atacado = []
+		self.ejercitos_atacantes_perdidos = 0
+		self.ejercitos_atacados_perdidos = 0
 
 	def agregar_dados(self):
 		"""Agrega los valores de los dados segun la cantidad
