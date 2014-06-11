@@ -9,15 +9,18 @@ class Tarjeta(object):
 		"""Constructor desde pais y tipo."""
 		self.pais = pais
 		self.tipo = tipo
-		self.canje = True
 
 	def __str__(self):
 		"""Representacion grafica."""
 		return "(%s, %s)" % (self.pais, NOMBRE_TARJETAS[self.tipo])
-        
-        def tipo(self):
-            """Devuelve el tipo de tarjeta"""
-            return self.tipo
+
+	def su_tipo(self):
+		"""Devuelve el tipo de tarjeta."""
+		return self.tipo
+
+	def su_pais(self):
+		"""Devuelve el nombre del pais de la tarjeta."""
+		return self.pais
 
 class Mazo(object):
 	"""Implementacion del mazo de tarjetas de pais."""
@@ -31,13 +34,15 @@ class Mazo(object):
 		self.llenar_mazo(paises_por_tarjeta)
 
 	def __len__(self):
-		"""Devuelve un numero entero que representa el numero de tarjetas total en el mazo."""
+		"""Devuelve un numero entero que representa el
+		numero de tarjetas total en el mazo."""
 		return len(self.tarjetas_a_pedir) + len(self.tarjetas_devueltas)
 		
 	def llenar_mazo(self, paises_por_tarjeta):
 		"""Recibe un diccionario con los paises y tipo de tarjeta.
 		Crea objetos de la clase Tarjeta con los datos del diccionario.
-		Tambien crea una lista vacia y agrega todas las Tarjetas. Luego llama a mezclar_mazo para mezclarlas."""
+		Tambien crea una lista vacia y agrega todas las Tarjetas.
+		Luego llama a mezclar_mazo para mezclarlas."""
 		tarjetas = []
 		for tipo in paises_por_tarjeta:
 			for pais in paises_por_tarjeta[tipo]:	
