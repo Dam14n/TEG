@@ -73,16 +73,18 @@ class Jugador(object):
 		2 mas, Argentina con 2 menos (salen 3, entra 1) y Chile con 1
 		menos."""
 		reagrupamientos = []
-		pais_origen = self.pedir_pais_propio(tablero, "%s en etapa de reagrupamiento. Seleccionar pais de origen." % self)
+		pais_origen = True
 		while pais_origen:
-			while pais_origen and tablero.ejercitos_pais(pais_origen) > 1:
-				pais_origen = self.pedir_pais_propio(tablero, "%s en etapa de reagrupamiento. Seleccionar pais de origen." % self)
+			pais_origen = self.pedir_pais_propio(tablero, "%s esta reagrupando. Seleccionar pais de origen." % self)
+			while pais_origen and not tablero.ejercitos_pais(pais_origen) > 1:
+				pais_origen = self.pedir_pais_propio(tablero, "%s esta reagrupando. Seleccionar pais de origen." % self)
+			
 			if pais_origen:
 				# creo la lista desde 1 hasta la cantidad de ejercitos del pais menos 1, ya que si o si uno se tiene que quedar.
-				cantidad_a_mover = Interfaz.elegir("Reagrupamiento", "Ejercitos del pais %s." % pais_origen, [cantidad for cantidad in xrange(1, tablero.ejercitos_pais(pais_origen) - 1)])
-				pais_destino = pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
+				cantidad_a_mover = Interfaz.elegir(self, "Cuantos ejercitos se desplazan del pais %s." % pais_origen, [cantidad for cantidad in xrange(1, tablero.ejercitos_pais(pais_origen))])
+				pais_destino = self.pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
 				while pais_destino and not tablero.es_limitrofe(pais_origen, pais_destino):
-					pais_destino = pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
+					pais_destino = self.pedir_pais_propio(tablero, '%s esta reagrupando. Seleccionar pais de destino.' % self)
 				if not pais_destino: continue
 				reagrupamientos.append((pais_origen, pais_destino, cantidad_a_mover))
 				tablero.actualizar_interfaz({pais_origen: - cantidad_a_mover, pais_destino: cantidad_a_mover})
@@ -90,7 +92,7 @@ class Jugador(object):
 				tablero.asignar_ejercitos(pais_destino, cantidad_a_mover)
 		return reagrupamientos
 
-	def pedir_pais_propio(self, mensaje):
+	def pedir_pais_propio(self, tablero, mensaje):
 		"""Recibe una cadena de texto y lo escribe en el titulo.
 		Pide al jugador que seleccione un pais que sea suyo.
 		Si clickea un pais suyo con click izquierdo, devuelve el pais.
