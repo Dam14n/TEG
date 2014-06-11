@@ -73,7 +73,7 @@ class Tablero(object):
 		paises = {}
 		if agregados:
 			for pais in agregados:
-				paises[pais] = (self.paises[pais].su_color(), agregados[pais])
+				paises[pais] = (self.paises[pais].su_color(), self.paises[pais].sus_ejercitos() + agregados[pais])
 		else:
 			for pais in self.paises:
 				paises[pais] = (self.paises[pais].su_color(), self.paises[pais].sus_ejercitos())
