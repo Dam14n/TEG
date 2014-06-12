@@ -28,10 +28,10 @@ class Mazo(object):
 	def __init__(self, paises_por_tarjeta):
 		"""Creacion desde un diccionario de paises segun tipo.
 		Debe inicializar el mazo con todas las tarjetas mezcladas."""
-		self.cantidad = 0
 		self.tarjetas_a_pedir = []
 		self.tarjetas_devueltas = []
 		self.llenar_mazo(paises_por_tarjeta)
+		self.cantidad = len(self)
 
 	def __len__(self):
 		"""Devuelve un numero entero que representa el
@@ -52,11 +52,9 @@ class Mazo(object):
 	def mezclar_mazo(self, tarjetas):
 		"""Recibe una lista de tarjetas(ver clase Tarjeta).
 		Mezcla las tarjetas en el atributo tarjetas_a_pedir."""
-		try:
-			while True:
-				self.tarjetas_a_pedir.append(tarjetas.pop())
-		except IndexError:
-			shuffle(self.tarjetas_a_pedir)
+		while tarjetas:
+			self.tarjetas_a_pedir.append(tarjetas.pop())
+		shuffle(self.tarjetas_a_pedir)
 
 	def sacar_tarjeta(self):
 		"""Saca una tarjeta del mazo.
@@ -67,6 +65,7 @@ class Mazo(object):
 		except IndexError:
 			self.mezclar_mazo(self.tarjetas_devueltas)
 			tarjeta = self.tarjetas_a_pedir.pop()
+			self.cantidad -= 1
 		return tarjeta
 
 	def devolver_tarjeta(self, tarjeta):
@@ -74,6 +73,7 @@ class Mazo(object):
 		devueltas. Cuando se acaben las tarjetas del mazo, se mezclaran
 		las ya devueltas."""
 		self.tarjetas_devueltas.append(tarjeta)
+		self.cantidad += 1
 
 	def cantidad_tarjetas(self):
 		"""Devuelve la cantidad *total* de tarjetas (tanto en el mazo
