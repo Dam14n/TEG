@@ -13,32 +13,32 @@ class _Pais(object):
 		self.continente = continente
 
 	def su_nombre(self):
-		""""""
+		"""Devuelve el nombre del pais"""
 		return self.nombre
 		
 	def su_color(self):
-		""""""
+		"""Devuelve el color del pais"""
 		return self.color
 	
 	def su_continente(self):
-		""""""
+		"""Devuelve el continente del pais"""
 		return self.continente
 		
 	def sus_ejercitos(self):
-		""""""
+		"""Devueleve la cantidad de ejercitos en el pais"""
 		return self.ejercitos
 	
 	def sus_limitrofes(self):
-		""""""
+		"""Devuelve los paises limitrofes del pais"""
 		return self.limitrofes
 
 	def ocupar(self, color, ejercitos):
-		""""""
+		"""Ocupa el pais por otro color"""
 		self.color = color
 		self.ejercitos = ejercitos
 	
 	def asignar_ejercitos(self, ejercitos):
-		""""""
+		"""Le suma ejercitos al pais"""
 		self.ejercitos += ejercitos
 
 class Tablero(object):
