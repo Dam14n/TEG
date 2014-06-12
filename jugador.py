@@ -52,6 +52,7 @@ class Jugador(object):
 				else: cantidad[""] -= 1
 				asignaciones[pais_elegido] = asignaciones.get(pais_elegido, 0) + 1
 				ejercitos_a_poner -= 1
+				tablero.actualizar_interfaz({pais_elegido: asignaciones[pais_elegido]})
 		return asignaciones
 
 	def reagrupar(self, tablero):
@@ -145,12 +146,8 @@ class Jugador(object):
 
 	def asignar_tarjeta(self,tarjeta):
 		"""Se le asigna una tarjeta al jugador"""
-                if tarjeta.su_tipo() in self.tarjetas.keys():
-                    paises = self.tarjetas[tarjeta.su_tipo()]
-                    paises.append(tarjeta)
-                    self.tarjetas[tarjeta.su_tipo()] = paises
-                else:
-                    self.tarjetas[tarjeta.su_tipo()] = [tarjeta]
+		self.tarjetas[tarjeta.su_tipo()] = self.tarjetas.get(tarjeta.su_tipo(), []) + [tarjeta]
+
 
 	def devolver_tarjeta(self, mazo, tipo_tarjeta):
 		"""Devuelve la tarjeta canjeada al mazo"""
