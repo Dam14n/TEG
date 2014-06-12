@@ -192,7 +192,7 @@ class TEG(object):
 		ejercitos_para_agregar = 0
 		if len(jugador.sus_tarjetas()) > 0:
 			ejercitos_para_agregar += self.comprobar_canje(jugador)
-		elif cantidad_paises / 2 < 3:
+		if cantidad_paises / 2 < 3:
 			ejercitos_para_agregar += 3
 		else:
 			ejercitos_para_agregar += cantidad_paises / 2
