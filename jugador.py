@@ -120,11 +120,11 @@ class Jugador(object):
 		return origen
 
 	def su_color(self):
-		""""""
+		"""Devuelve el color del jugador"""
 		return self.color
 
 	def su_nombre(self):
-		""""""
+		"""Devuelve el nombre del jugador"""
 		return self.nombre
 
 	def __str__(self):
