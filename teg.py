@@ -17,7 +17,9 @@ import paises as paises
 
 class TEG(object):
 	"""Implementa la logica de una partida de TEG."""
-
+	
+	CANTIDAD_PARA_CANJE = 3
+	
 	def __init__(self):
 		"""Constructor de la clase.
 		Inicializa la interfaz grafica y los objetos que va a utilizar
@@ -160,9 +162,10 @@ class TEG(object):
 		"""
 		if paises_ganados and (jugador.canjes_realizados() < 3 or paises_ganados > 1):
 			jugador.asignar_tarjeta(self.mazo.sacar_tarjeta())
+			self.tarjetas_usadas[jugador] = self.tarjetas_usadas.get(jugador, [])
 			for tarjeta in jugador.sus_tarjetas():
 				if tablero.color_pais(tarjeta.su_pais()) == jugador.su_color() and not tarjeta.su_pais() in self.tarjetas_usadas[jugador]:
-					self.tarjetas_usadas[jugador] = self.tarjetas_usadas.get(jugador, []) + [tarjeta.su_pais()]
+					self.tarjetas_usadas[jugador].append(tarjeta.su_pais())
 					self.tablero.actualizar_interfaz({tarjeta.su_pais(): 2})
 					self.tablero.asignar_ejercitos(tarjeta.su_pais(), 2)
 
@@ -184,21 +187,23 @@ class TEG(object):
                 jugador = self.jugadores[inicia_ronda % len(self.jugadores)]
 		cantidad_paises = len(self.tablero.paises_color(jugador.su_color()))
 		ejercitos_para_agregar = 0
-		if (len(jugador.sus_tarjetas()) > 1):
+		if len(jugador.sus_tarjetas()) > 1:
 			ejercitos_para_agregar += comprobar_canje(tipo_tarjeta)
-		elif (cantidad_paises/2) < 3:
+		elif cantidad_paises / 2 < 3:
 			ejercitos_para_agregar += 3
 		else:
-			ejercitos_para_agregar += cantidad_paises/2
+			ejercitos_para_agregar += cantidad_paises / 2
 		ejercitos = self.comprobar_continentes(jugador)
 		ejercitos[""] = ejercitos_para_agregar
-		ejercitos_jugador = jugador.agregar_ejercitos(self.tablero,ejercitos)
+		ejercitos_jugador = jugador.agregar_ejercitos(self.tablero, ejercitos)
 		for pais in ejercitos_jugador:
 			self.tablero.asignar_ejercitos(pais, ejercitos_jugador[pais])
 		self.tablero.actualizar_interfaz()
         
 	def comprobar_continentes(self,jugador):
-		"""Comprueba si el jugador posee un continente completo y devuelve un diccionario con la cantidad de ejercitos a agregar por contienente si es que posee alguno completo."""
+		"""Comprueba si el jugador posee un continente completo
+		y devuelve un diccionario con la cantidad de ejercitos a
+		agregar por contienente si es que posee alguno completo."""
 		fichas_continentes = {}
 		continente_completo = []
 		for continente in paises.paises_por_continente :
@@ -215,28 +220,39 @@ class TEG(object):
 		return fichas_continentes
                 
 	def comprobar_canje(self,tarjeta):
-		"""Comprueba si las tarjetas pasadas son del mismo tipo o si son todas diferentes y devuelve la cantidad de ejercitos a agregar, en caso contrario devuelve 0"""
-		tipos_t = {}
+		"""Comprueba si las tarjetas pasadas son del mismo tipo
+		o si son todas diferentes y devuelve la cantidad de
+		ejercitos a agregar, en caso contrario devuelve 0."""
+		# no se si vos tenes otros metodos en tu pc, pero estos tienen varios errores.
+		# Me parece mmejor que en la clase jugador, en vez de hacer una lista con las tarjetas,
+		# Hagamos un diccionario. Un ejemplo seria: {globo: ["Argentina", "colombia"], barco: ["Iran"]}
+		# Asi, podriamos verificar mas facil si puede hacer un canje. Ponele que agarra una tarjeta "Chile" globo
+		# Nos fijamos si len(dic[globo]) == 3 o si len(dic) == 3 y ahí tienen los dos canjes.
+		# Despues fijate si podes, al final de este metodo, "jugador.devolver_tarjeta(mazo, tipo)" jugador no esta
+		# definido y ese metodo en la clase jugador no recibe un mazo, solo la tarjeta. No se si vos tendras
+		# algun otro en tu pc.
+		tipos_tarjeta = {}
 		ejercitos = 0
                 tarjetas = jugador.sus_tarjetas()
 		for tarjeta in tarjetas:
-				tipos_t[tarjeta.su_tipo()] = tipos_t.get(tarjeta.su_tipo(), 0) + 1
-		if len(tipos_t.keys()) == 3:
+				tipos_t[tarjeta.su_tipo()] = tipos_tarjeta.get(tarjeta.su_tipo(), 0) + 1
+		if len(tipos_tarjeta) == CANTIDAD_PARA_CANJE:
 			ejercitos = calcular_ejercitos()
 			jugador.agregar_canje()
-			for tipo in tipos_t:
+			for tipo in tipos_tarjeta:
 				jugador.devolver_tarjeta(mazo,tipo)
 		else:
-			for tipo in tipos_t:
-				if tipos_t.get(tipo) == 3:
+			for tipo in tipos_tarjeta:
+				if tipos_tarjeta.get(tipo) == CANTIDAD_PARA_CANJE:
 					ejercitos = calcular_ejercitos() 
 					jugador.agregar_canje()
-					for x in xrange(1,4):
+					for x in xrange(CANTIDAD_PARA_CANJE):
 						jugador.devolver_tarjeta(mazo,tipo)
 		return ejercitos
 		
 	def calcular_ejercitos(self):
-		"""Calcula la cantidad de ejercitos segun el canje que realize"""
+		"""Calcula la cantidad de ejercitos correspondiente
+		a la cantidad de canjes efectuados."""
                 canjes = jugador.sus_canjes()
 		if canjes == 0:
 			ejercitos = 4
