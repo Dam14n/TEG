@@ -18,7 +18,7 @@ import paises as paises
 class TEG(object):
 	"""Implementa la logica de una partida de TEG."""
 
-	
+	CANTIDAD_PARA_CANJE = 3
 
 	def __init__(self):
 		"""Constructor de la clase.
@@ -30,7 +30,6 @@ class TEG(object):
 		Interfaz.iniciar(paises.coordenadas_de_paises, paises.archivo_tablero, paises.color_tablero)
 		self.tarjetas_usadas = {}
 		self.jugadores = []
-                self.cantidad_para_canje = 3
 		# Eventualmente aca haya falta agregar mas cosas...
 
 	def configurar_el_juego(self):
@@ -239,15 +238,14 @@ class TEG(object):
                 tarjetas_devueltas = {}
 		#for tarjeta in tarjetas:
 		#		tipos_t[tarjeta.su_tipo()] = tipos_tarjeta.get(tarjeta.su_tipo(), 0) + 1
-                print tarjetas
-		if len(tarjetas) == self.cantidad_para_canje:
+		if len(tarjetas) == self.CANTIDAD_PARA_CANJE:
 			ejercitos = self.calcular_ejercitos(jugador)
 			jugador.agregar_canje()
 			for tarjeta in tarjetas:
                                 tarjetas_devueltas[tarjeta] = [tarjetas.get(tarjeta)[0]]         
 		else:
 			for tipo in tarjetas:
-				if len(tarjetas[tipo]) == self.cantidad_para_canje:
+				if len(tarjetas[tipo]) == self.CANTIDAD_PARA_CANJE:
 					ejercitos = self.calcular_ejercitos(jugador) 
 					jugador.agregar_canje()
                                         tar = []
@@ -260,7 +258,6 @@ class TEG(object):
                 elif len(tarjetas_devueltas) > 1:
                     for tipo in tarjetas_devueltas:
 				jugador.devolver_tarjeta(self.mazo,tipo)
-                print tarjetas_devueltas 
                 if len(tarjetas_devueltas) > 0:
                         self.mostrar_canje(tarjetas_devueltas,jugador)
 		return ejercitos
