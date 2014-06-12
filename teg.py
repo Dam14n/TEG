@@ -226,18 +226,9 @@ class TEG(object):
 		"""Comprueba si las tarjetas pasadas son del mismo tipo
 		o si son todas diferentes y devuelve la cantidad de
 		ejercitos a agregar, en caso contrario devuelve 0."""
-		# no se si vos tenes otros metodos en tu pc, pero estos tienen varios errores.
-		# Me parece mmejor que en la clase jugador, en vez de hacer una lista con las tarjetas,
-		# Hagamos un diccionario. Un ejemplo seria: {globo: ["Argentina", "colombia"], barco: ["Iran"]}
-		# Asi, podriamos verificar mas facil si puede hacer un canje. Ponele que agarra una tarjeta "Chile" globo
-		# Despues fijate si podes, al final de este metodo, "jugador.devolver_tarjeta(mazo, tipo)" jugador no esta
-		# definido y ese metodo en la clase jugador no recibe un mazo, solo la tarjeta. No se si vos tendras
-		# algun otro en tu pc.
 		ejercitos = 0
                 tarjetas = jugador.sus_tarjetas()
                 tarjetas_devueltas = {}
-		#for tarjeta in tarjetas:
-		#		tipos_t[tarjeta.su_tipo()] = tipos_tarjeta.get(tarjeta.su_tipo(), 0) + 1
 		if len(tarjetas) == self.CANTIDAD_PARA_CANJE:
 			ejercitos = self.calcular_ejercitos(jugador)
 			jugador.agregar_canje()
@@ -275,7 +266,7 @@ class TEG(object):
             
             
         def mostrar_canje_pais(self,pais,jugador):
-            """Muestra por pantalla el pais canejada"""
+            """Muestra por pantalla el pais canejado"""
             Interfaz.setear_titulo("%s realizo canje: %s" % (jugador.su_nombre(),pais))
             time.sleep(5)
             self.tablero.actualizar_interfaz()
@@ -303,6 +294,7 @@ class TEG(object):
 		return 0 != self.tablero.paises_color(jugador.su_color())
 
 	def jugar(self):
+		"""Implementa la logica de jugar."""
 		Interfaz.setear_titulo('Trabajo de Entrega Grupal')
 		Interfaz.alertar('Bienvenido!', 'Bienvenido al Trabajo de Entrega Grupal')
 
