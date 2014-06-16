@@ -1,0 +1,94 @@
+#encoding: latin1
+
+from tablero import Tablero
+from mazo import Mazo
+from dados import Dados
+
+def correr_prueba(caso_prueba, descripcion, resultados_pruebas):
+	''' Comprueba la igualdad pasada por parametro como caso_prueba y 
+	muestra la descripcion y su resultado en pantalla. 
+	Si no se cumple la igualdad se suma uno a la clave correspondiente en el 
+	diccionario resultados_pruebas.
+	caso_prueba es una igualdad a la que se le va a aplicar assert.
+	descripcion es un texto descriptivo con el que se va a imprimir el 
+	resultado de la operacion.
+	resultados_pruebas es un diccionario con las claves "OK" y "ERROR", que
+	identifican valores numericos con la cantidad de pruebas pasadas y 
+	falladas, respectivamente.
+	'''
+	try:
+		assert caso_prueba
+		print "Prueba %s: OK" % descripcion
+		resultados_pruebas["OK"] += 1
+	except AssertionError:
+		print "Prueba %s: ERROR" % descripcion
+		resultados_pruebas["ERROR"] += 1
+
+
+def prueba_jugador(resultados_pruebas):
+	
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+
+def prueba_tablero(resultados_pruebas):
+	
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+
+def prueba_dados(resultados_pruebas):
+	
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+	
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+	
+	descripcion = ""
+	res_esperado = []
+	res_real = 
+	correr_prueba(res_esperado == res_real, descripcion, resultados_pruebas)
+
+def correr_pruebas():
+	''' Ejecuta las pruebas y muestra el resultado de toda la ejecucion en
+	pantalla.
+	'''
+	resultados_pruebas = { "OK" : 0, "ERROR" : 0 }
+
+	prueba_jugador(resultados_pruebas)
+	prueba_tablero(resultados_pruebas)
+	prueba_dados(resultados_pruebas)
+
+	print "Pruebas corridas: %d OK, %d errores." % \
+			(resultados_pruebas["OK"], resultados_pruebas["ERROR"])
+
+correr_pruebas()
